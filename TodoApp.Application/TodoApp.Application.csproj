@@ -8,6 +8,10 @@
     <PackageReference Include="FluentValidation" Version="11.11.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Progression\Validators\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
