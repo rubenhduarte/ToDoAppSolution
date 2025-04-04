@@ -1,0 +1,18 @@
+# Directorios de compilación
+bin/
+obj/
+
+# Configuración de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Configuración de Rider
+.idea/
+
+# Otros
+*.log
+
+
