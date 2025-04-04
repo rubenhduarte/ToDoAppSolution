@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "J9dM5VkbKpA=",
+  "success": true,
+  "projectFilePath": "E:\\Sources\\Beyond\\ToDoAppSolution\\TodoApp.Infrastructure\\TodoApp.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Ruben\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.200\\microsoft.net.sdk.compilers.toolset.9.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}
