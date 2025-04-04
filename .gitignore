@@ -1,6 +1,6 @@
 # Directorios de compilación
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
 
 # Configuración de Visual Studio
 .vs/
