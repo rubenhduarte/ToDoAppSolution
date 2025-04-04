@@ -1,8 +1,11 @@
 ﻿
+using FluentValidation;
+using FluentValidation.Results;
 using TodoApp.Application.Progression.Commands;
 using TodoApp.Application.TodoItems.CreateCommand;
 using TodoApp.Application.TodoItems.UpdateCommand;
 using TodoApp.Domain.Entities;
+using TodoApp.Domain.Interfaces;
 
 namespace TodoApp.Application.Services;
 
@@ -33,48 +36,54 @@ public class TodoListService
         
         public void AddProgression(int id, DateTime dateTime, decimal percent)
         {
-            // Se obtiene el TodoItem (para este ejemplo, asumimos que el _todoList interno lo tiene expuesto o lo podemos obtener de alguna forma)
-            // Aquí se asume que _todoList tiene un método interno GetItemById, o se utiliza algún mecanismo para obtenerlo.
-            // Para fines de este ejemplo, se recurre a la lógica interna (idealmente, encapsularías este proceso)
-            var todoItem = (_todoList as dynamic).Items.FirstOrDefault(item => item.Id == id) as TodoItem;
+            var todoItem = _todoList.GetItemById(id);
             if (todoItem == null)
                 throw new ArgumentException("El item no existe.");
 
-            var command = new RegisterProgressionCommand { TodoItemId = id, DateTime = dateTime, Percent = percent };
+            var command = new RegisterProgressionCommand { TodoItemId = id, 
+                                                           DateTime = dateTime, 
+                                                           Percent = percent };
+
             var validator = new RegisterProgressionCommandValidator(todoItem);
             var result = validator.Validate(command);
             if (!result.IsValid)
                 throw new ValidationException(result.Errors);
-            
+
             _todoList.RegisterProgression(id, dateTime, percent);
+
         }
         
         // Métodos para UpdateTodoItem y RemoveTodoItem aplicarían validaciones similares.
-        public void UpdateTodoItem(int id, string description)
+        public void UpdateTodoItem(int id, string newDescription)
         {
-            var todoItem = (_todoList as dynamic).Items.FirstOrDefault(item => item.Id == id) as TodoItem;
+
+            var todoItem = _todoList.GetItemById(id);
             if (todoItem == null)
                 throw new ArgumentException("El item no existe.");
-            
-            var command = new UpdateTodoItemCommand { TodoItemId = id, NewDescription = description };
+
+            var command = new UpdateTodoItemCommand
+            {
+                TodoItemId = id,
+                NewDescription = newDescription
+            };
+
             var validator = new UpdateTodoItemCommandValidator(todoItem);
-            var result = validator.Validate(command);
+            ValidationResult result = validator.Validate(command);
             if (!result.IsValid)
                 throw new ValidationException(result.Errors);
-            
-            _todoList.UpdateItem(id, description);
+
+            _todoList.UpdateItem(id, newDescription);
         }
         
         public void RemoveTodoItem(int id)
         {
-            var todoItem = (_todoList as dynamic).Items.FirstOrDefault(item => item.Id == id) as TodoItem;
+            var todoItem = _todoList.GetItemById(id);
             if (todoItem == null)
                 throw new ArgumentException("El item no existe.");
-            
-            // Validar que no se exceda el 50%
+
             if (todoItem.TotalProgress() > 50)
                 throw new ValidationException("No se puede remover un item con más del 50% completado.");
-            
+
             _todoList.RemoveItem(id);
         }
         

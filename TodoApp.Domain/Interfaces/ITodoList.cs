@@ -1,4 +1,6 @@
-﻿namespace TodoApp.Domain.Interfaces;
+﻿using TodoApp.Domain.Entities;
+
+namespace TodoApp.Domain.Interfaces;
 
 public interface ITodoList
 {
@@ -13,4 +15,6 @@ public interface ITodoList
                              DateTime dateTime, 
                              decimal percent);
     void PrintItems();
+    TodoItem GetItemById(int id);
+
 }
