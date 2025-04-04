@@ -1,5 +1,7 @@
 ﻿namespace TodoApp.Application.TodoItems.CreateCommand;
 using FluentValidation;
+using TodoApp.Domain.Interfaces;
+
 public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
 {
     public CreateTodoItemCommandValidator(ITodoListRepository repository)
