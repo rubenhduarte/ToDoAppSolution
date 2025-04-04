@@ -8,5 +8,14 @@
 
 ## Estructura del Proyecto
 
+TodoAppSolution
+│
+├── TodoApp.Domain
+├── TodoApp.Infrastructure
+├── TodoApp.Application
+├── TodoApp.WebApi
+├── TodoApp.ConsoleApp
+└── TodoApp.Tests
+
 
 
