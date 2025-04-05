@@ -1,0 +1,178 @@
+﻿@page "/todo"
+@using TodoApp.BlazorClient.Services
+@using TodoApp.Domain.Entities
+@inject TodoApiService TodoService
+
+<h3>Todo List</h3>
+
+<div class="mb-3">
+    <button class="btn btn-primary me-2" @onclick="LoadItems">Cargar Items</button>
+    <button class="btn btn-success" @onclick="ShowCreateItem">Crear Nuevo Item</button>
+</div>
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else if (todoItems != null && todoItems.Count > 0)
+{
+    <div>
+        @foreach (var item in todoItems)
+        {
+            <div class="card my-2 p-2">
+                <h5>@item.Id) @item.Title - @item.Description (@item.Category) Completed: @item.IsCompleted</h5>
+                
+                <!-- Mostrar progreso acumulado y barra -->
+                <p><strong>Progreso acumulado:</strong> @GetCumulativeProgress(item)%</p>
+                <ProgressBar Percentage="@GetCumulativeProgress(item)" />
+
+                <!-- Botón para mostrar formulario de registro de progresión -->
+                <button class="btn btn-sm btn-primary" @onclick="() => ShowProgressionForm(item.Id)">Agregar Progresión</button>
+                
+                <!-- Formulario de progresión, visible si registerProgressionItemId coincide -->
+                @if (registerProgressionItemId == item.Id)
+                {
+                    <div class="mt-2">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label>Fecha:</label>
+                                <input class="form-control" type="date" @bind="progressionDate" />
+                            </div>
+                            <div class="col">
+                                <label>Porcentaje:</label>
+                                <input class="form-control" type="number" @bind="progressionPercent" />
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm me-2" @onclick="RegisterProgression">Registrar Progresión</button>
+                        <button class="btn btn-secondary btn-sm" @onclick="CancelProgressionForm">Cancelar</button>
+                    </div>
+                }
+                
+                <!-- Lista de progresiones -->
+                @if (item.Progressions != null && item.Progressions.Count > 0)
+                {
+                    <ul class="list-group mt-2">
+                        @{
+                            decimal cumulative = 0;
+                        }
+                        @foreach (var prog in item.Progressions.OrderBy(p => p.AccionDate))
+                        {
+                            cumulative += prog.Percent;
+                            <li class="list-group-item">
+                                <div>@prog.AccionDate.ToString("g") - @cumulative% completado</div>
+                                <ProgressBar Percentage="cumulative" />
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No hay items.</p>
+}
+
+<!-- Formulario para crear un nuevo TodoItem -->
+@if (showCreate)
+{
+    <div class="card p-2 my-2">
+        <h4>Crear TodoItem</h4>
+        <div class="mb-2">
+            <label>Título:</label>
+            <input class="form-control" @bind="newTitle" placeholder="Ingresa el título" />
+        </div>
+        <div class="mb-2">
+            <label>Descripción:</label>
+            <input class="form-control" @bind="newDescription" placeholder="Ingresa la descripción" />
+        </div>
+        <div class="mb-2">
+            <label>Categoría:</label>
+            <select class="form-control" @bind="newCategory">
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Hobby">Hobby</option>
+            </select>
+        </div>
+        <button class="btn btn-primary me-2" @onclick="CreateItem">Crear</button>
+        <button class="btn btn-secondary" @onclick="() => showCreate = false">Cancelar</button>
+    </div>
+}
+
+@code {
+    // Lista de TodoItems (se espera que el servicio ya realice el mapeo, si es necesario)
+    private List<TodoApp.Domain.Entities.TodoItem> todoItems;
+    private bool loading = false;
+    private bool showCreate = false;
+    
+    // Variables para el formulario de creación de TodoItem
+    private string newTitle;
+    private string newDescription;
+    private string newCategory = "Work";
+    
+    // Variables para el formulario de registro de progresión
+    private int registerProgressionItemId; // Guarda el ID del item actual para el que se registra la progresión
+    private DateTime progressionDate = DateTime.Now;
+    private decimal progressionPercent;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+    
+    private async Task LoadItems()
+    {
+        loading = true;
+        todoItems = await TodoService.GetTodoItemsAsync();
+        loading = false;
+    }
+    
+    private void ShowCreateItem()
+    {
+        showCreate = true;
+    }
+    
+    private async Task CreateItem()
+    {
+        await TodoService.AddTodoItemAsync(newTitle, newDescription, newCategory);
+        await LoadItems();
+        showCreate = false;
+        newTitle = newDescription = string.Empty;
+        newCategory = "Work";
+    }
+    
+    // Calcula el progreso acumulado de un item sumando sus progresiones
+    private decimal GetCumulativeProgress(TodoApp.Domain.Entities.TodoItem item)
+    {
+        if (item.Progressions == null)
+            return 0;
+        return item.Progressions.Sum(p => p.Percent);
+    }
+    
+    // Muestra el formulario de progresión para el item especificado
+    private void ShowProgressionForm(int itemId)
+    {
+        registerProgressionItemId = itemId;
+        progressionDate = DateTime.Now;
+        progressionPercent = 0;
+    }
+    
+    // Llama al servicio para registrar la progresión y recarga los items
+    private async Task RegisterProgression()
+    {
+        if (registerProgressionItemId == 0)
+            return;
+        await TodoService.RegisterProgressionAsync(registerProgressionItemId, progressionDate, progressionPercent);
+        await LoadItems();
+        CancelProgressionForm();
+    }
+    
+    // Reinicia los campos del formulario de progresión
+    private void CancelProgressionForm()
+    {
+        registerProgressionItemId = 0;
+        progressionDate = DateTime.Now;
+        progressionPercent = 0;
+    }
+}

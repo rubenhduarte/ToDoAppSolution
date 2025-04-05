@@ -5,6 +5,16 @@ using TodoApp.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorUI", policy =>
+    {
+        policy.WithOrigins("https://localhost:7041")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Registro de dependencias utilizando la implementación en memoria
 builder.Services.AddSingleton<ITodoListRepository, InMemoryTodoListRepository>();
 builder.Services.AddSingleton<ITodoList, TodoList>(sp =>
@@ -16,6 +26,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors("AllowBlazorUI");
 
 if (app.Environment.IsDevelopment())
 {

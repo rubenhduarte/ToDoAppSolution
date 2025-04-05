@@ -20,7 +20,9 @@ public class TodoListService
             _repository = repository;
         }
         
-        public int CreateTodoItem(string title, string description, string category)
+        public int CreateTodoItem(string title, 
+                                  string description, 
+                                  string category)
         {
             // Validar el comando de creación
             var createCmd = new CreateTodoItemCommand { Title = title, Description = description, Category = category };
@@ -34,7 +36,9 @@ public class TodoListService
             return id;
         }
         
-        public void AddProgression(int id, DateTime dateTime, decimal percent)
+        public void AddProgression(int id, 
+                                   DateTime dateTime, 
+                                   decimal percent)
         {
             var todoItem = _todoList.GetItemById(id);
             if (todoItem == null)
@@ -54,7 +58,8 @@ public class TodoListService
         }
         
         // Métodos para UpdateTodoItem y RemoveTodoItem aplicarían validaciones similares.
-        public void UpdateTodoItem(int id, string newDescription)
+        public void UpdateTodoItem(int id, 
+                                   string newDescription)
         {
 
             var todoItem = _todoList.GetItemById(id);
@@ -88,4 +93,9 @@ public class TodoListService
         }
         
         public void PrintTodoItems() => _todoList.PrintItems();
+        public List<TodoItem> GetAllItems()
+        {
+            
+            return (_todoList as TodoList)?.Items ?? new List<TodoItem>();
+        }
     }

@@ -13,7 +13,10 @@ public class TodoList : ITodoList
         Items = new List<TodoItem>();
     }
 
-    public void AddItem(int id, string title, string description, string category)
+    public void AddItem(int id, 
+                        string title, 
+                        string description, 
+                        string category)
     {
         if (!_repository.GetAllCategories().Contains(category))
             throw new ArgumentException("La categoría no es válida.");
@@ -22,7 +25,8 @@ public class TodoList : ITodoList
         Items.Add(newItem);
     }
 
-    public void UpdateItem(int id, string description)
+    public void UpdateItem(int id, 
+                           string description)
     {
         var item = Items.FirstOrDefault(x => x.Id == id);
         if (item == null)
@@ -46,7 +50,9 @@ public class TodoList : ITodoList
         Items.Remove(item);
     }
 
-    public void RegisterProgression(int id, DateTime dateTime, decimal percent)
+    public void RegisterProgression(int id, 
+                                    DateTime dateTime, 
+                                    decimal percent)
     {
         var item = Items.FirstOrDefault(x => x.Id == id);
         if (item == null)

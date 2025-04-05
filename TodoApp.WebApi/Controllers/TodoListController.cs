@@ -93,4 +93,19 @@ public class TodoListController : ControllerBase
             return BadRequest(new { Error = ex.Message });
         }
     }
+
+    [HttpGet("items")]
+    public IActionResult GetItems()
+    {
+        try
+        {
+            var items = _service.GetAllItems();
+            return Ok(items);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+    }
+
 }
