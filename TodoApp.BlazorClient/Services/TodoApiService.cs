@@ -13,10 +13,11 @@ public class TodoApiService
     }
 
     // Obtiene la lista de TodoItems (se asume que la Web API tiene un endpoint GET /api/todolist/items)
-    public async Task<List<TodoItem>> GetTodoItemsAsync()
+    //public async Task<List<TodoItem>> GetTodoItemsAsync()
+    public async Task<List<TodoApp.BlazorClient.Models.TodoItem>> GetTodoItemsAsync()
     {
         var domainItems = await _httpClient.GetFromJsonAsync<List<TodoItem>>("api/todolist/items");
-        return domainItems?.Select(MapToClientModel).ToList() ?? new List<TodoItem>();
+        return domainItems?.Select(MapToClientModel).ToList();
     }
 
     public async Task<int> AddTodoItemAsync(string title, 
@@ -44,8 +45,10 @@ public class TodoApiService
                                                DateTime dateTime, 
                                                decimal percent)
     {
-        // Usamos formato ISO 8601 para la fecha (dateTime:o)
-        var url = $"api/todolist/progression?id={id}&dateTime={dateTime:o}&percent={percent}";
+
+        string encodedDateTime = Uri.EscapeDataString(dateTime.ToString("o"));
+         var url = $"api/todolist/progression?id={id}&dateTime={encodedDateTime}&percent={percent}";
+
         var response = await _httpClient.PostAsync(url, null);
         response.EnsureSuccessStatusCode();
     }
@@ -66,13 +69,31 @@ public class TodoApiService
     }
 
 
-    private TodoItem MapToClientModel(TodoApp.Domain.Entities.TodoItem domainItem) {
-        return new TodoItem(
-            domainItem.Id,
-            domainItem.Title,
-            domainItem.Description,
-            domainItem.Category
-        );
+    //private TodoItem MapToClientModel(TodoApp.Domain.Entities.TodoItem domainItem) {
+    //    return new TodoItem(
+    //        domainItem.Id,
+    //        domainItem.Title,
+    //        domainItem.Description,
+    //        domainItem.Category
+    //    );
+    //}
+    private TodoApp.BlazorClient.Models.TodoItem MapToClientModel(TodoApp.Domain.Entities.TodoItem domainItem)
+    {
+        return new TodoApp.BlazorClient.Models.TodoItem
+        {
+            Id = domainItem.Id,
+            Title = domainItem.Title,
+            Description = domainItem.Description,
+            Category = domainItem.Category,
+            IsCompleted = domainItem.IsCompleted,
+            Progressions = domainItem.Progressions?
+            .Select(p => new TodoApp.BlazorClient.Models.Progression
+            {
+                Date = p.Date, 
+                Percent = p.Percent
+            })
+            .ToList() ?? new List<TodoApp.BlazorClient.Models.Progression>()
+        };
     }
-    
+   
 }

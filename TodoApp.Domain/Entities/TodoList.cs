@@ -63,7 +63,7 @@ public class TodoList : ITodoList
 
         if (item.Progressions.Any())
         {
-            var lastDate = item.Progressions.Max(p => p.AccionDate);
+            var lastDate = item.Progressions.Max(p => p.Date);
             if (dateTime <= lastDate)
                 throw new ArgumentException("La fecha de la nueva progresión debe ser mayor que la última progresión.");
         }
@@ -81,12 +81,12 @@ public class TodoList : ITodoList
         {
             Console.WriteLine($"{item.Id}) {item.Title} - {item.Description} ({item.Category}) Completed:{item.IsCompleted}");
             decimal cumulative = 0;
-            foreach (var prog in item.Progressions.OrderBy(p => p.AccionDate))
+            foreach (var prog in item.Progressions.OrderBy(p => p.Date))
             {
                 cumulative += prog.Percent;
                 int progressBars = (int)(cumulative / 2);
                 string bar = new string('O', progressBars);
-                Console.WriteLine($"{prog.AccionDate} - {cumulative}% |{bar}|");
+                Console.WriteLine($"{prog.Date} - {cumulative}% |{bar}|");
             }
         }
     }

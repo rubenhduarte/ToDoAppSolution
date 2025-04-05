@@ -3,15 +3,11 @@
 public class Progression {
     public Progression(DateTime date,
                        decimal percent) {
-        AccionDate = date;
+        Date = date;
         Percent = percent;
     }
 
-    public DateTime AccionDate {
-        get;
-    }
-    public decimal Percent {
-        get;
-    }
+    public DateTime Date { get; }
+    public decimal Percent { get; }
 
 }

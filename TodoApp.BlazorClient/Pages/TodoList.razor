@@ -55,11 +55,11 @@ else if (todoItems != null && todoItems.Count > 0)
                         @{
                             decimal cumulative = 0;
                         }
-                        @foreach (var prog in item.Progressions.OrderBy(p => p.AccionDate))
+                        @foreach (var prog in item.Progressions.OrderBy(p => p.Date))
                         {
                             cumulative += prog.Percent;
                             <li class="list-group-item">
-                                <div>@prog.AccionDate.ToString("g") - @cumulative% completado</div>
+                                <div>@prog.Date.ToString("g") - @cumulative% completado</div>
                                 <ProgressBar Percentage="cumulative" />
                             </li>
                         }
@@ -102,7 +102,7 @@ else
 
 @code {
     // Lista de TodoItems (se espera que el servicio ya realice el mapeo, si es necesario)
-    private List<TodoApp.Domain.Entities.TodoItem> todoItems;
+    private List<TodoApp.BlazorClient.Models.TodoItem> todoItems;
     private bool loading = false;
     private bool showCreate = false;
     
@@ -143,7 +143,7 @@ else
     }
     
     // Calcula el progreso acumulado de un item sumando sus progresiones
-    private decimal GetCumulativeProgress(TodoApp.Domain.Entities.TodoItem item)
+    private decimal GetCumulativeProgress(TodoApp.BlazorClient.Models.TodoItem item)
     {
         if (item.Progressions == null)
             return 0;
