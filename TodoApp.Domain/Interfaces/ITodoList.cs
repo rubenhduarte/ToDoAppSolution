@@ -4,8 +4,7 @@ namespace TodoApp.Domain.Interfaces;
 
 public interface ITodoList
 {
-    void AddItem(int id, 
-                 string title, 
+    void AddItem(string title, 
                  string description, 
                  string category);
     void UpdateItem(int id, 

@@ -13,15 +13,14 @@ public class TodoList : ITodoList
         Items = new List<TodoItem>();
     }
 
-    public void AddItem(int id, 
-                        string title, 
+    public void AddItem(string title, 
                         string description, 
                         string category)
     {
         if (!_repository.GetAllCategories().Contains(category))
             throw new ArgumentException("La categoría no es válida.");
 
-        var newItem = new TodoItem(id, title, description, category);
+        var newItem = new TodoItem(title, description, category);
         Items.Add(newItem);
     }
 

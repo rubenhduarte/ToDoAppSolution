@@ -1,9 +1,16 @@
+using Microsoft.EntityFrameworkCore;
 using TodoApp.Application.Services;
 using TodoApp.Domain.Entities;
 using TodoApp.Domain.Interfaces;
+using TodoApp.Infrastructure.Data;
 using TodoApp.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddDbContext<TodoDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddCors(options =>
 {
@@ -15,11 +22,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
 // Registro de dependencias utilizando la implementación en memoria
-builder.Services.AddSingleton<ITodoListRepository, InMemoryTodoListRepository>();
-builder.Services.AddSingleton<ITodoList, TodoList>(sp =>
-    new TodoList(sp.GetRequiredService<ITodoListRepository>()));
-builder.Services.AddSingleton<TodoListService>();
+builder.Services.AddScoped<ITodoListRepository, SqlTodoListRepository>();
+
+builder.Services.AddScoped<ITodoList, TodoListEF>();
+builder.Services.AddScoped<TodoListService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

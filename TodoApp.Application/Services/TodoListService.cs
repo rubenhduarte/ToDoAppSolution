@@ -32,7 +32,7 @@ public class TodoListService
                 throw new ValidationException(result.Errors);
 
             int id = _repository.GetNextId();
-            _todoList.AddItem(id, title, description, category);
+            _todoList.AddItem(title, description, category);
             return id;
         }
         
