@@ -1,12 +1,12 @@
 ﻿namespace TodoApp.Domain.Entities;
 public class TodoItem 
 {
-    public int Id { get; private set; }
+    public int Id { get; set; }
     public string Title { get; private set;}
     public string Description { get; private set;}
     public string Category { get; private set;}
     
-    public List<Progression> Progressions { get; private set; } = new();
+    public List<Progression> Progressions { get; set; } = new();
     public bool IsCompleted => TotalProgress() == 100;
     public decimal TotalProgress() => Progressions.Sum(p => p.Percent);
     public TodoItem(string title,

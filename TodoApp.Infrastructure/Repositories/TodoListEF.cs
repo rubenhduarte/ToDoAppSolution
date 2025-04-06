@@ -93,6 +93,8 @@ public class TodoListEF : ITodoList
 
     public List<TodoItem> GetAllItems()
     {
-        return _context.TodoItems.Include("Progressions").ToList();
+        return _context.TodoItems
+               .Include(t => t.Progressions)
+               .ToList();
     }
 }

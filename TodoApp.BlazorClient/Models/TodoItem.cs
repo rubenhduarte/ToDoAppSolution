@@ -9,5 +9,5 @@ public class TodoItem
     public List<Progression> Progressions { get; set; } = new();
     public bool IsCompleted { get; set; }
 
-    public decimal NewPercent { get; set; }
+    public decimal NewPercent { get; set; } = 1;
 }
