@@ -15,5 +15,5 @@ public interface ITodoList
                              decimal percent);
     void PrintItems();
     TodoItem GetItemById(int id);
-
+    List<TodoItem> GetAllItems();
 }

@@ -19,8 +19,8 @@ public class TodoListController : ControllerBase
     {
         try
         {
-            int id = _service.CreateTodoItem(title, description, category);
-            return Ok(new { Id = id, Message = "TodoItem agregado exitosamente" });
+            _service.CreateTodoItem(title, description, category);
+            return Ok(new { Message = "TodoItem agregado exitosamente" });
         }
         catch (Exception ex)
         {

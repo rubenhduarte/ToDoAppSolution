@@ -89,9 +89,12 @@ public class TodoList : ITodoList
             }
         }
     }
-
     public TodoItem GetItemById(int id)
     {
         return Items.FirstOrDefault(x => x.Id == id);
+    }
+    public List<TodoItem> GetAllItems()
+    {
+        return Items;
     }
 }

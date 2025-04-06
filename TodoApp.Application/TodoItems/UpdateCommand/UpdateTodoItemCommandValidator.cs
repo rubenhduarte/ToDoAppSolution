@@ -7,8 +7,8 @@ public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCo
 {
     public UpdateTodoItemCommandValidator(TodoItem todoItem)
     {
-        RuleFor(x => todoItem.TotalProgress())
-            .LessThanOrEqualTo(50)
-            .WithMessage("No se puede actualizar un item con más del 50% completado.");
+        RuleFor(x => x.NewDescription).NotEmpty();
+        RuleFor(x => x.TodoItemId).Must(_ => todoItem.TotalProgress() <= 50)
+                                  .WithMessage("Más del 50% completado, no se puede modificar");
     }
 }

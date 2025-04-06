@@ -12,14 +12,6 @@ public class SqlTodoListRepository : ITodoListRepository
         _context = context;
     }
 
-    public int GetNextId()
-    {
-        // Se obtiene el máximo Id registrado en la tabla TodoItems y se suma 1.
-        // Nota: En un entorno real, se usaría una columna Identity.
-        int maxId = _context.TodoItems.Any() ? _context.TodoItems.Max(t => t.Id) : 0;
-        return maxId + 1;
-    }
-
     public List<string> GetAllCategories()
     {
         // Para simplificar, se devuelve una lista fija.

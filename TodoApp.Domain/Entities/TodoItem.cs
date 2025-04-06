@@ -18,11 +18,8 @@ public class TodoItem
         Progressions = new List<Progression>();
     }
 
+    private TodoItem() { } 
 
-    private TodoItem()
-    {
-        Progressions = new List<Progression>();
-    }
 
     public void UpdateDescription(string description)
     {
