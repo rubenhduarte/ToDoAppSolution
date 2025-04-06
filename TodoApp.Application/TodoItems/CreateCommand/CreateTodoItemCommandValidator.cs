@@ -6,8 +6,9 @@ public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCo
 {
     public CreateTodoItemCommandValidator(ITodoListRepository repository)
     {
-        RuleFor(x => x.Category)
-            .Must(category => repository.GetAllCategories().Contains(category))
-            .WithMessage("La categoría no es válida.");
+        RuleFor(x => x.Title).NotEmpty();
+        RuleFor(x => x.Description).NotEmpty();
+        RuleFor(x => x.Category).Must(cat => repository.GetAllCategories().Contains(cat))
+                                .WithMessage("Categoría inválida");
     }
 }

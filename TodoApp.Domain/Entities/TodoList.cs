@@ -13,16 +13,19 @@ public class TodoList : ITodoList
         Items = new List<TodoItem>();
     }
 
-    public void AddItem(int id, string title, string description, string category)
+    public void AddItem(string title, 
+                        string description, 
+                        string category)
     {
         if (!_repository.GetAllCategories().Contains(category))
             throw new ArgumentException("La categoría no es válida.");
 
-        var newItem = new TodoItem(id, title, description, category);
+        var newItem = new TodoItem(title, description, category);
         Items.Add(newItem);
     }
 
-    public void UpdateItem(int id, string description)
+    public void UpdateItem(int id, 
+                           string description)
     {
         var item = Items.FirstOrDefault(x => x.Id == id);
         if (item == null)
@@ -46,7 +49,9 @@ public class TodoList : ITodoList
         Items.Remove(item);
     }
 
-    public void RegisterProgression(int id, DateTime dateTime, decimal percent)
+    public void RegisterProgression(int id, 
+                                    DateTime dateTime, 
+                                    decimal percent)
     {
         var item = Items.FirstOrDefault(x => x.Id == id);
         if (item == null)
@@ -57,7 +62,7 @@ public class TodoList : ITodoList
 
         if (item.Progressions.Any())
         {
-            var lastDate = item.Progressions.Max(p => p.AccionDate);
+            var lastDate = item.Progressions.Max(p => p.Date);
             if (dateTime <= lastDate)
                 throw new ArgumentException("La fecha de la nueva progresión debe ser mayor que la última progresión.");
         }
@@ -75,18 +80,21 @@ public class TodoList : ITodoList
         {
             Console.WriteLine($"{item.Id}) {item.Title} - {item.Description} ({item.Category}) Completed:{item.IsCompleted}");
             decimal cumulative = 0;
-            foreach (var prog in item.Progressions.OrderBy(p => p.AccionDate))
+            foreach (var prog in item.Progressions.OrderBy(p => p.Date))
             {
                 cumulative += prog.Percent;
                 int progressBars = (int)(cumulative / 2);
                 string bar = new string('O', progressBars);
-                Console.WriteLine($"{prog.AccionDate} - {cumulative}% |{bar}|");
+                Console.WriteLine($"{prog.Date} - {cumulative}% |{bar}|");
             }
         }
     }
-
     public TodoItem GetItemById(int id)
     {
         return Items.FirstOrDefault(x => x.Id == id);
+    }
+    public List<TodoItem> GetAllItems()
+    {
+        return Items;
     }
 }

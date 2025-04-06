@@ -1,17 +1,17 @@
 ﻿namespace TodoApp.Domain.Entities;
 
-public class Progression {
+public class Progression 
+{
     public Progression(DateTime date,
-                       decimal percent) {
-        AccionDate = date;
+                       decimal percent) 
+    {
+        Date = date;
         Percent = percent;
     }
+    private Progression() { }
 
-    public DateTime AccionDate {
-        get;
-    }
-    public decimal Percent {
-        get;
-    }
+    public int Id { get; private set; }
+    public DateTime Date { get; private set; }
+    public decimal Percent { get; private set; }
 
 }

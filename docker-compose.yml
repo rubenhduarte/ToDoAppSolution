@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: todoapp-webapi
+    build:
+      context: .
+      dockerfile: TodoApp.WebAPI/Dockerfile   # Ajusta la ruta si el Dockerfile está en otra ubicación
+    ports:
+      - "80:80"     # Puerto HTTP
+      - "443:443"   # Puerto HTTPS, si lo necesitas
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=TodoAppDb;User Id=sa;Password=admin123!
+
+    depends_on:
+      - sqlserver
+    networks:
+      - backend
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=admin123!  # Usa una contraseña fuerte en producción
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

@@ -14,7 +14,7 @@ public class RegisterProgressionCommandValidator : AbstractValidator<RegisterPro
             .Must(date =>
             {
                 return !todoItem.Progressions.Any() || date > 
-                            todoItem.Progressions.Max(p => p.AccionDate);
+                            todoItem.Progressions.Max(p => p.Date);
             })
             .WithMessage("La fecha de la nueva progresión debe ser mayor que la última progresión.");
 

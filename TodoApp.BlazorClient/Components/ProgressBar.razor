@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Components
+
+<div class="progress">
+    <div class="progress-bar" role="progressbar" style="width:@Percentage%;" aria-valuenow="@Percentage" aria-valuemin="0" aria-valuemax="100">
+        @Percentage%
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public decimal Percentage { get; set; }
+}
