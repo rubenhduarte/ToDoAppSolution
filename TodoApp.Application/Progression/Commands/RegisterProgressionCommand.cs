@@ -1,4 +1,4 @@
-﻿namespace TodoApp.Application.Progression.Commands; 
+﻿namespace TodoApp.Application.Progressions.Commands; 
 
 public class RegisterProgressionCommand
 {

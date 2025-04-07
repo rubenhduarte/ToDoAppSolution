@@ -19,7 +19,7 @@ public class TodoListController : ControllerBase
     {
         try
         {
-            _service.CreateTodoItem(title, description, category);
+            _ = _service.CreateTodoItem(title, description, category);
             return Ok(new { Message = "TodoItem agregado exitosamente" });
         }
         catch (Exception ex)

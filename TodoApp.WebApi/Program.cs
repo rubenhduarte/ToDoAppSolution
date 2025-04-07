@@ -25,9 +25,8 @@ builder.Services.AddCors(options =>
 
 
 // Registro de dependencias utilizando la implementación en memoria
-builder.Services.AddScoped<ITodoListRepository, SqlTodoListRepository>();
 
-builder.Services.AddScoped<ITodoList, TodoListEF>();
+builder.Services.AddScoped<ITodoListRepository, SqlTodoListRepository>();
 builder.Services.AddScoped<TodoListService>();
 
 builder.Services.AddControllers();

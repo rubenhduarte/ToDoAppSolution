@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using TodoApp.Domain.Entities;
 
-namespace TodoApp.Application.Progression.Commands;
+namespace TodoApp.Application.Progressions.Commands;
 public class RegisterProgressionCommandValidator : AbstractValidator<RegisterProgressionCommand>
 {
     public RegisterProgressionCommandValidator(TodoItem todoItem)

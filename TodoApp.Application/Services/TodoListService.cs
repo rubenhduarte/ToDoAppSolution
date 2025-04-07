@@ -1,7 +1,7 @@
 ﻿
 using FluentValidation;
 using FluentValidation.Results;
-using TodoApp.Application.Progression.Commands;
+using TodoApp.Application.Progressions.Commands;
 using TodoApp.Application.TodoItems.CreateCommand;
 using TodoApp.Application.TodoItems.UpdateCommand;
 using TodoApp.Domain.Entities;
@@ -10,16 +10,14 @@ using TodoApp.Domain.Interfaces;
 namespace TodoApp.Application.Services;
 public class TodoListService
 {
-    private readonly ITodoList _todoList;
     private readonly ITodoListRepository _repository;
 
-    public TodoListService(ITodoList todoList, ITodoListRepository repository)
+    public TodoListService(ITodoListRepository repository)
     {
-        _todoList = todoList;
         _repository = repository;
     }
 
-    public void CreateTodoItem(string title, string description, string category)
+    public int CreateTodoItem(string title, string description, string category)
     {
         var command = new CreateTodoItemCommand
         {
@@ -33,12 +31,14 @@ public class TodoListService
         if (!result.IsValid)
             throw new ValidationException(result.Errors);
 
-        _todoList.AddItem(title, description, category);
+        var todoItem = new TodoItem(title, description, category);
+        _repository.Add(todoItem);
+        return todoItem.Id;
     }
 
     public void UpdateTodoItem(int id, string newDescription)
     {
-        var item = _todoList.GetItemById(id);
+        var item = _repository.GetById(id);
         if (item == null)
             throw new ArgumentException("El item no existe.");
 
@@ -53,24 +53,25 @@ public class TodoListService
         if (!result.IsValid)
             throw new ValidationException(result.Errors);
 
-        _todoList.UpdateItem(id, newDescription);
+        item.UpdateDescription(newDescription);
+        _repository.Update(item);
     }
 
     public void RemoveTodoItem(int id)
     {
-        var item = _todoList.GetItemById(id);
+        var item = _repository.GetById(id);
         if (item == null)
             throw new ArgumentException("El item no existe.");
 
         if (item.TotalProgress() > 50)
             throw new InvalidOperationException("No se puede eliminar un item con más del 50% completado.");
 
-        _todoList.RemoveItem(id);
+        _repository.Remove(item);
     }
 
     public void AddProgression(int id, DateTime dateTime, decimal percent)
     {
-        var item = _todoList.GetItemById(id);
+        var item = _repository.GetById(id);
         if (item == null)
             throw new ArgumentException("El item no existe.");
 
@@ -86,21 +87,35 @@ public class TodoListService
         if (!result.IsValid)
             throw new ValidationException(result.Errors);
 
-        _todoList.RegisterProgression(id, dateTime, percent);
+        var progression = new Progression(dateTime, percent);
+        item.AddProgression(progression);
+        _repository.Update(item);
     }
 
     public List<TodoItem> GetAllItems()
     {
-        return _todoList.GetAllItems();
+        return _repository.GetAll();
     }
 
-    public TodoItem GetItemById(int id)
+    public TodoItem? GetItemById(int id)
     {
-        return _todoList.GetItemById(id);
+        return _repository.GetById(id);
     }
 
     public void PrintTodoItems()
     {
-        _todoList.PrintItems();
+        var items = _repository.GetAll();
+        foreach (var item in items)
+        {
+            Console.WriteLine($"{item.Id}) {item.Title} - {item.Description} ({item.Category}) Completed: {item.IsCompleted}");
+            decimal cumulative = 0;
+            foreach (var prog in item.Progressions.OrderBy(p => p.Date))
+            {
+                cumulative += prog.Percent;
+                int progressBars = (int)(cumulative / 2);
+                string bar = new string('O', progressBars);
+                Console.WriteLine($"{prog.Date:g} - {cumulative}% |{bar}|");
+            }
+        }
     }
 }

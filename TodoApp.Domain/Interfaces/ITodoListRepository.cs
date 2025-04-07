@@ -1,6 +1,15 @@
-﻿namespace TodoApp.Domain.Interfaces;
+﻿using TodoApp.Domain.Entities;
+
+namespace TodoApp.Domain.Interfaces;
 
 public interface ITodoListRepository
 {
-    List<string> GetAllCategories();
+    int Add(TodoItem item);
+    void Update(TodoItem item);
+    void Remove(TodoItem item);
+
+    List<TodoItem> GetAll();
+    TodoItem? GetById(int id);            
+    List<string> GetAllCategories();  
+    
 }
