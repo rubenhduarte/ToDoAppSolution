@@ -89,6 +89,19 @@ public class TodoListTests : IDisposable
         Assert.Throws<ValidationException>(() => _service.UpdateTodoItem(id, "New Description"));
     }
 
+    [Fact]
+    public void RemoveTodoItem_WhenProgressAbove50_ShouldThrow()
+    {
+        int id = _service.CreateTodoItem("Test", "Initial Description", "Work");
+        DateTime date1 = new DateTime(2025, 03, 18);
+        DateTime date2 = new DateTime(2025, 03, 19);
+
+        _service.AddProgression(id, date1, 30);
+        _service.AddProgression(id, date2, 30); // Total = 60%
+
+        Assert.Throws<InvalidOperationException>(() => _service.RemoveTodoItem(id));
+    }
+
     public void Dispose()
     {
         _context.Database.EnsureDeleted();
